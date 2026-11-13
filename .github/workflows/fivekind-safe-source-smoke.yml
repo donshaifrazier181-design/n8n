@@ -1,0 +1,24 @@
+name: FiveKind Safe Source Smoke
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate source entry points without installation, services, secrets or daemon
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/test-inventory.mjs
+                    node -e "const p=require('./package.json');if(!p.scripts?.['test:inventory'])process.exit(2)"
+                    node scripts/test-inventory.mjs
